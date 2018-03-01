@@ -1,0 +1,163 @@
+
+
+<p-dialog [(visible)]="modalNewEditTopicVisibility" [modal]="true" >
+    <p-header>
+        Header content here
+    </p-header>
+
+    <h3>Float Label</h3>
+    <span class="ui-float-label">
+        <input [(ngModel)]="nombre"id="float-input" type="text" size="30" pInputText> 
+        <label for="float-input">Username</label>
+    </span>
+
+
+    <h3>AutoResize</h3>
+    <span class="ui-float-label">
+    <textarea [(ngModel)]="observation" rows="5" cols="30" id="float-input" pInputTextarea autoResize="autoResize"></textarea>
+    <label for="float-input">Observacion</label>
+    </span>
+    
+    <p-rating [(ngModel)]="nivel" stars="3" [cancel]="false"></p-rating>
+    <p-footer>
+            <p-button label="Click" (onClick)="newTopic()"></p-button>
+    </p-footer>
+    
+</p-dialog>
+<p-tabMenu [model]="menuItems" [(activeItem)]="activeItem"></p-tabMenu>
+<div *ngIf="activeItem.label==='All Themes'">
+    <div class="ui-g">
+
+        <div class="ui-widget-header" style="padding:4px 10px;border-bottom: 0 none">
+            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+            <input #gb type="text" pInputText size="50" placeholder="Global Filter">
+        </div>
+        <p-dataTable [value]="allThemes" [rows]="5" [paginator]="true" [globalFilter]="gb" #dt>
+            <p-header>Todos los Cursos</p-header>
+            <p-column field="nombre" header="Nombre" [filter]="true" filterPlaceholder="Search"></p-column>
+            <p-column field="description" header="Descripción" [filter]="true" filterPlaceholder="Search"></p-column>
+            <p-column [style]="{'text-align':'center'}" styleClass="col-button" header="Añadir Cursos por Aprender"> 
+                    <ng-template let-car="rowData" pTemplate="body">
+                        <button type="button" pButton (click)="selectCar(car)" icon="fa-graduation-cap"></button>
+                    </ng-template>
+        </p-column>
+        <p-column [style]="{'text-align':'center'}" styleClass="col-button" header="Añadir Cursos por Enseñar"> 
+                                
+                <ng-template let-car="rowData" pTemplate="body">
+                    <button type="button" pButton (click)="selectCar(car)" class="ui-button-secondary" icon="fa-book"></button>
+                </ng-template>
+    </p-column>
+        </p-dataTable>
+    </div>
+</div>
+<div *ngIf="activeItem.label==='Themes For Learning'">
+    <div class="ui-g">
+
+        
+            <div class="ui-g-12 ui-md-2">
+                    <div class="ui-md-12">
+                            <p-autoComplete [(ngModel)]="val" [suggestions]="results" 
+                                (completeMethod)="search($event)" field="nombre" (onSelect)="selected($event)">
+                            </p-autoComplete>
+                        </div>
+                        <div class="ui-md-12">
+                        <p-autoComplete [(ngModel)]="themePSL" [suggestions]="filteredThemesPSL" field="nombre" (completeMethod)="filterBrandsPSL($event)"  [minLength]="1">
+                                <ng-template let-theme pTemplate="item">
+                                    <p-card [style]="{width: '100%'}" styleClass="ui-card-shadow">
+                                        <p-header>
+                                            
+                                        </p-header>
+                                        <div>{{theme.nombre}}</div>
+                                        <div>
+                                            
+                                        </div>
+                                        <p-footer>
+                                            <button pButton type="button" label="Add" (click)="add()" icon="fa-check"></button>
+                                        </p-footer>
+                                    </p-card>
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
+              <div *ngIf="visibility">
+                        <p-card [style]="{width: '100%'}" styleClass="ui-card-shadow">
+                                <p-header>
+                                    {{val.nombre}}
+                                </p-header>
+                                <div>{{val.description}}</div>
+                                <div>
+                                    <p-rating stars="3" [ngModel]="val.nivel"  readonly="true" [cancel]="false"></p-rating>
+                                
+                                </div>
+                                <p-footer>
+                                    <button pButton type="button" label="Add" (click)="add()" icon="fa-check"></button>
+                                </p-footer>
+                            </p-card>
+                   
+              </div>
+              </div>
+              <div class="ui-g-12 ui-md-8 ui-g-nopad">
+                  <div class="ui-g-12 ui-g-nopad">
+                    <p-dataTable [(value)]="themes" selectionMode="single" [(selection)]="selectedCar" [contextMenu]="cm">
+                        <p-header>Right Click on Rows for ContextMenu</p-header>
+                        <p-column field="nombre" header="nombre"></p-column>
+                        <p-column field="description" header="description"></p-column>
+                        <p-column [style]="{'text-align':'center'}" field="nivel" header="nivel">
+                            <ng-template let-audit="rowData" pTemplate="body">
+                                <div [style.background-color]="red">
+                                    <p-rating stars="3" [style.background-color]="red" [ngModel]="audit.nivel"  readonly="true" [cancel]="false"></p-rating>
+                                </div>
+                            </ng-template>
+                        </p-column>
+                        <p-column [style]="{'text-align':'center'}" styleClass="col-button" header="Eliminar"> 
+                                
+                                    <ng-template let-car="rowData" pTemplate="body">
+                                        <button type="button" pButton (click)="selectCar(car)" icon="fa-search"></button>
+                                    </ng-template>
+                        </p-column>
+                    </p-dataTable>
+                  </div>
+                  
+              </div>
+
+              <div class="ui-g-12 ui-md-2">
+                    <div class="ui-md-12">
+                        <h3>Temas Recomendados.</h3>
+                        <p-card [style]="{width: '100%'}" styleClass="ui-card-shadow">
+                                <p-header>
+                                    Fútbol
+                                </p-header>
+                                <div>Una ferfefe</div>
+                                <div>
+                                    <p-rating stars="3"  readonly="true" [cancel]="false"></p-rating>
+                                
+                                </div>
+                                <p-footer>
+                                    <button pButton type="button" label="Add" (click)="add()" icon="fa-check"></button>
+                                </p-footer>
+                            </p-card>
+                            <hr>
+                            <p-card [style]="{width: '100%'}" styleClass="ui-card-shadow">
+                                    <p-header>
+                                        Fútbol 2
+                                    </p-header>
+                                    <div>Una ferfefe</div>
+                                    <div>
+                                        <p-rating stars="3"  readonly="true" [cancel]="false"></p-rating>
+                                    
+                                    </div>
+                                    <p-footer>
+                                        <button pButton type="button" label="Add" (click)="add()" icon="fa-check"></button>
+                                    </p-footer>
+                                </p-card>
+                    </div>
+              </div>
+              <div class="ui-g-12">
+                  Footer
+                  <p-button label="Click" (onClick)="newEdittopic($event)"></p-button>
+                  
+              </div>
+    </div>
+</div>
+<div *ngIf="activeItem.label==='Themes For Theaching'">
+    {{activeItem.label}}
+</div>
